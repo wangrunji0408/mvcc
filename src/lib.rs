@@ -1,29 +1,14 @@
-use std::{
-    collections::VecDeque,
-    sync::{atomic::*, Mutex},
-};
+#[macro_use]
+extern crate log;
 
+mod db;
 #[cfg(test)]
 mod tests;
 mod tx;
+mod tx_manager;
 
-use crate::tx::*;
-
-pub struct Database {
-    data: Vec<Mutex<VecDeque<Record>>>,
-    txid: AtomicU64,
-}
-
-struct Record {
-    version: u64,
-    data: usize,
-}
-
-impl Database {
-    fn new() -> Self {
-        todo!()
-    }
-}
+pub use crate::db::Database;
+pub use crate::tx::{Transaction, TxId, TxStatus};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -31,4 +16,5 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub enum Error {
     NotFound,
     Abort,
+    TxNotActive,
 }
